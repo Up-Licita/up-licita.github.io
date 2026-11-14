@@ -1,11 +1,12 @@
 """
-formatacao.py — Monta o texto (HTML do Telegram) de cada licitação.
-
-Usa somente campos devolvidos pelo PNCP; se algum vier vazio, mostra "não informado".
+formatacao.py — Textos usados no Telegram e no site (moeda, datas, mensagens).
+Usa somente campos devolvidos pelo PNCP; vazio vira "não informado".
 """
 
 import html
 from datetime import datetime
+
+from radar import urls
 
 
 def _txt(valor) -> str:
@@ -22,22 +23,18 @@ def moeda(valor) -> str:
     return "R$ " + f"{v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
-def data_br(valor) -> str:
+def data_br(valor, com_hora: bool = True) -> str:
     if not valor:
         return "não informado"
     try:
-        return datetime.fromisoformat(str(valor)[:19]).strftime("%d/%m/%Y %H:%M")
+        d = datetime.fromisoformat(str(valor)[:19])
+        return d.strftime("%d/%m/%Y %H:%M" if com_hora else "%d/%m/%Y")
     except ValueError:
         return _txt(valor)
 
 
 def link_pncp(item: dict) -> str | None:
-    """Página pública do edital no PNCP: /app/editais/{cnpj}/{ano}/{sequencial}."""
-    orgao = item.get("orgaoEntidade") or {}
-    cnpj, ano, seq = orgao.get("cnpj"), item.get("anoCompra"), item.get("sequencialCompra")
-    if cnpj and ano and seq:
-        return f"https://pncp.gov.br/app/editais/{cnpj}/{ano}/{seq}"
-    return None
+    return urls.link_pncp(item)
 
 
 def mensagem(item: dict, titulo_nicho: str) -> str:
@@ -46,7 +43,6 @@ def mensagem(item: dict, titulo_nicho: str) -> str:
     objeto = (item.get("objetoCompra") or "").strip()
     if len(objeto) > 600:
         objeto = objeto[:600].rsplit(" ", 1)[0] + "…"
-
     local = " / ".join(x for x in [unidade.get("municipioNome"), unidade.get("ufSigla")] if x)
 
     linhas = [
@@ -59,25 +55,24 @@ def mensagem(item: dict, titulo_nicho: str) -> str:
         f"🟢 <b>Abertura propostas:</b> {data_br(item.get('dataAberturaProposta'))}",
         f"⏰ <b>Encerramento:</b> {data_br(item.get('dataEncerramentoProposta'))}",
     ]
-    links = []
+    links = [f'<a href="{urls.absoluta(urls.pagina_licitacao(item))}">Detalhes</a>']
     if link_pncp(item):
-        links.append(f'<a href="{link_pncp(item)}">Ver no PNCP</a>')
+        links.append(f'<a href="{link_pncp(item)}">Edital no PNCP</a>')
     if item.get("linkSistemaOrigem"):
         links.append(f'<a href="{html.escape(item["linkSistemaOrigem"])}">Sistema de origem</a>')
-    if links:
-        linhas += ["", "🔗 " + " | ".join(links)]
+    linhas += ["", "🔗 " + " | ".join(links)]
     return "\n".join(linhas)
 
 
-def resumo_excedente(titulo_nicho: str, restantes: list[dict]) -> str:
-    """Mensagem curta listando o que passou do limite de envios individuais."""
-    linhas = [f"<b>{html.escape(titulo_nicho)}</b> — mais {len(restantes)} oportunidades hoje:", ""]
-    for item in restantes[:30]:
+def resumo_excedente(titulo_nicho: str, restantes: list[dict], seg: str | None = None) -> str:
+    linhas = [f"<b>{html.escape(titulo_nicho)}</b>: mais {len(restantes)} oportunidades novas", ""]
+    for item in restantes[:25]:
         un = item.get("unidadeOrgao") or {}
         objeto = (item.get("objetoCompra") or "")[:90]
-        url = link_pncp(item)
-        rotulo = html.escape(f"{un.get('municipioNome', '')}/{un.get('ufSigla', '')} — {objeto}")
-        linhas.append(f'• <a href="{url}">{rotulo}</a>' if url else f"• {rotulo}")
-    if len(restantes) > 30:
-        linhas.append(f"… e outras {len(restantes) - 30}.")
+        rotulo = html.escape(f"{un.get('municipioNome', '')}/{un.get('ufSigla', '')}: {objeto}")
+        linhas.append(f'• <a href="{urls.absoluta(urls.pagina_licitacao(item))}">{rotulo}</a>')
+    if len(restantes) > 25:
+        linhas.append(f"… e outras {len(restantes) - 25}.")
+    if seg:
+        linhas += ["", f'👉 <a href="{urls.absoluta(urls.pagina_segmento(seg))}">Ver todas no site</a>']
     return "\n".join(linhas)
