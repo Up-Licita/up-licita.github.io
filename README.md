@@ -1,4 +1,4 @@
-# Radar de Licitações
+# UpLicita: radar de licitações
 
 Robô que roda sozinho 2x por dia (06h37 e 15h37, horário de Brasília) no GitHub Actions:
 
@@ -7,7 +7,7 @@ Robô que roda sozinho 2x por dia (06h37 e 15h37, horário de Brasília) no GitH
 3. Envia as **novas** para os canais do Telegram dos segmentos que têm canal (@uplicita_alimentos e @up_licita_construcao).
 4. Gera e publica o **site** com todas as abertas: página por licitação, por estado, por cidade e por segmento, busca, sitemap para o Google.
 
-Site: https://guilhermemoraesss.github.io/radar-licitacoes
+Site: https://up-licita.github.io
 
 ## Configuração única
 - Segredo `TELEGRAM_BOT_TOKEN` em Settings → Secrets and variables → Actions.

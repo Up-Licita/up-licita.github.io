@@ -163,7 +163,7 @@ def layout(caminho: str, titulo: str, descricao: str, corpo: str, migalhas=None,
   <div class="envelope topo-linha">
     <a class="marca" href="{r}index.html" aria-label="{e(config.SITE_NOME)}, página inicial">
       <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="16" cy="16" r="7.5" fill="none" stroke="currentColor" stroke-width="2" opacity=".55"/><path d="M16 16 L27 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="21.5" cy="19.5" r="2.4" fill="#FFE45C"/></svg>
-      <span>Radar <b>de Licitações</b></span>
+      <span>Up<b>Licita</b></span>
     </a>
     <nav class="menu" aria-label="Principal">
       <a class="menu-secundario" href="{r}busca.html">Buscar</a>
@@ -439,8 +439,8 @@ def pagina_alertas() -> str:
 
 def pagina_sobre() -> str:
     corpo = """<div class="envelope estreito texto">
-  <h1>Sobre o Radar de Licitações</h1>
-  <p>O Radar reúne, todos os dias, as licitações públicas com prazo de proposta aberto publicadas no Portal Nacional de Contratações Públicas (PNCP), o portal oficial criado pela Lei 14.133/2021.</p>
+  <h1>Sobre o UpLicita</h1>
+  <p>O UpLicita reúne, todos os dias, as licitações públicas com prazo de proposta aberto publicadas no Portal Nacional de Contratações Públicas (PNCP), o portal oficial criado pela Lei 14.133/2021.</p>
   <p>Organizamos essas oportunidades por estado, cidade e segmento para que pequenos e médios fornecedores encontrem rapidamente o que podem vender ao governo.</p>
   <h2>De onde vêm os dados</h2>
   <p>Todos os dados vêm da API pública de consultas do PNCP. Não alteramos as informações oficiais; apenas organizamos. Em caso de divergência, vale o que está no edital e no portal oficial.</p>
@@ -448,7 +448,7 @@ def pagina_sobre() -> str:
   <p>Este é um serviço independente de informação. Antes de participar, leia o edital completo no link oficial de cada licitação.</p>
 </div>"""
     return layout("sobre.html", f"Sobre e fonte dos dados | {config.SITE_NOME}",
-                  "Como o Radar de Licitações reúne as licitações abertas do PNCP.", corpo,
+                  "Como o UpLicita reúne as licitações abertas do PNCP.", corpo,
                   [("Início", "index.html"), ("Sobre", None)])
 
 

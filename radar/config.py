@@ -10,8 +10,8 @@ config.py — Configurações do Radar de Licitações.
 # ---------------------------------------------------------------------------
 # SITE
 # ---------------------------------------------------------------------------
-SITE_NOME = "Radar de Licitações"
-SITE_URL = "https://guilhermemoraesss.github.io/radar-licitacoes"  # sem barra no fim
+SITE_NOME = "UpLicita"
+SITE_URL = "https://up-licita.github.io"  # sem barra no fim
 PASTA_SITE = "_site"
 MAX_PAGINAS_DETALHE = 50000  # trava de segurança contra site gigante
 
