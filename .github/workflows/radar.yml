@@ -8,6 +8,12 @@ on:
     - cron: "7 10 * * *"
     - cron: "7 19 * * *"
   workflow_dispatch:
+  # Roda também quando o código é atualizado (exceto a memória do robô)
+  push:
+    branches: [main]
+    paths-ignore:
+      - "estado/**"
+      - "README.md"
 
 permissions:
   contents: write   # necessário para salvar estado/vistos.json no repositório
